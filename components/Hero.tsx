@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { TextAnimate } from "./ui/text-animate";
-import { SparklesCore } from "./ui/sparkles";
 import MagicButton from "./ui/MagicButton";
 import { BackgroundBeams } from "./ui/background-beams";
 import { FaPhone } from "react-icons/fa6";
@@ -92,15 +91,16 @@ const Hero = () => {
 
           {/* Tagline Overlay */}
           <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-12 right-0 sm:right-4 md:right-8 lg:right-12 bg-gradient-to-br from-[#050a90] to-[#4a6fff] px-4 py-2 sm:px-6 sm:py-3 rounded-xl shadow-lg">
-            <TextAnimate
-              animation="slideLeft"
-              by="word"
-              duration={0.5}
-              delay={0.2}
-              className="text-sm sm:text-base md:text-lg lg:text-xl text-white font-semibold italic"
-            >
-              "Together We Raise, Together We Thrive."
-            </TextAnimate>
+          <TextAnimate
+        animation="slideLeft"
+  by="word"
+  duration={0.5}
+  delay={0.2}
+  className="text-sm sm:text-base md:text-lg lg:text-xl text-white font-semibold italic"
+>
+  &quot;Together We Raise, Together We Thrive.&quot;
+</TextAnimate>
+
           </div>
         </div>
       </div>

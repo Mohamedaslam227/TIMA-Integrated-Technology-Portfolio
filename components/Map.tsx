@@ -39,9 +39,9 @@ const Map: React.FC<MapProps> = ({ className }) => {
         {/* Marker with Custom Icon */}
         <Marker position={timaPosition} icon={customIcon}>
           <Popup>
-            <strong>TIMA Company</strong>
-            <br />
-            9°54'25.1"N 78°06'21.6"E
+          <strong>TIMA Company</strong>
+<br />
+9°54&apos;25.1&quot;N 78°06&apos;21.6&quot;E
           </Popup>
         </Marker>
       </MapContainer>
