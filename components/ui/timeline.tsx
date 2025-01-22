@@ -1,12 +1,10 @@
 "use client";
 import {
-  useMotionValueEvent,
   useScroll,
   useTransform,
   motion,
 } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
-import { Spotlight } from "./Spotlight";
 import { TextGenerateEffect } from "./text-generate-effect";
 
 interface TimelineEntry {
