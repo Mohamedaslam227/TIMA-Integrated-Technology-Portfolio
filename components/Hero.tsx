@@ -64,14 +64,13 @@ const Hero = () => {
 
           {/* Call-to-Action */}
           <div className="mt-4 md:mt-6">
-            <button onClick={handleScrollToFooter}>
-              <MagicButton
-                tittle={"Get in Touch"}
-                icon={<FaPhone />}
-                position={"left"}
-                otherClasses="gap-2"
-              />
-            </button>
+          <MagicButton
+        tittle={"Get in Touch"}
+        icon={<FaPhone />}
+        position={"left"}
+        otherClasses="gap-2"
+        onClick={handleScrollToFooter} // Pass the onClick handler here
+      />
           </div>
         </div>
 
