@@ -101,7 +101,7 @@ const FloatingDockDesktop = ({
   className?: string;
   handleScroll: (href: string) => void;
 }) => {
-  let mouseX = useMotionValue(Infinity);
+  const mouseX = useMotionValue(Infinity);
   return (
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
@@ -117,7 +117,7 @@ const FloatingDockDesktop = ({
           onClick={() => handleScroll(item.href)}
           className="flex items-center justify-center"
         >
-          <IconContainer mouseX={mouseX} {...item} />
+          <IconContainer mouseX={mouseX} icon={item.icon} />
         </button>
       ))}
     </motion.div>
@@ -126,30 +126,28 @@ const FloatingDockDesktop = ({
 
 function IconContainer({
   mouseX,
-  title,
   icon,
 }: {
   mouseX: MotionValue;
-  title: string;
   icon: React.ReactNode;
 }) {
-  let ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-  let distance = useTransform(mouseX, (val) => {
-    let bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+  const distance = useTransform(mouseX, (val) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
     return val - bounds.x - bounds.width / 2;
   });
 
-  let widthTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
-  let heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+  const widthTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+  const heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
 
-  let widthIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
-  let heightIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
+  const widthIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
+  const heightIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
 
-  let width = useSpring(widthTransform, { stiffness: 150, damping: 12 });
-  let height = useSpring(heightTransform, { stiffness: 150, damping: 12 });
-  let widthIconSpring = useSpring(widthIcon, { stiffness: 150, damping: 12 });
-  let heightIconSpring = useSpring(heightIcon, { stiffness: 150, damping: 12 });
+  const width = useSpring(widthTransform, { stiffness: 150, damping: 12 });
+  const height = useSpring(heightTransform, { stiffness: 150, damping: 12 });
+  const widthIconSpring = useSpring(widthIcon, { stiffness: 150, damping: 12 });
+  const heightIconSpring = useSpring(heightIcon, { stiffness: 150, damping: 12 });
 
   return (
     <motion.div
