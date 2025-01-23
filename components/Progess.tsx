@@ -115,7 +115,7 @@ const Progess = () => {
           </div>
         </WobbleCard>
       ),
-      image: "/Teamwork.svg",
+      image: "/Global.svg",
     },
   ];
 
