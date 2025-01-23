@@ -6,7 +6,6 @@ import {
   FaEnvelope, 
   FaPhone, 
   FaLinkedin, 
-  FaMapMarkerAlt, 
   FaHeart, 
   FaFacebookSquare, 
   FaGithubSquare,
@@ -20,12 +19,7 @@ import {
 } from "react-icons/fa";
 
 // Dynamically load the Map component
-const Map = dynamic(() => import("./Map"), { 
-  ssr: false,
-  loading: () => (
-    <div className="animate-pulse bg-gray-700 h-full w-full rounded-lg" />
-  )
-});
+
 
 // Types
 interface ContactLinkProps {
