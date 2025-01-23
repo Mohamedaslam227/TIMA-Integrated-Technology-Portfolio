@@ -32,7 +32,7 @@ const TechIconCloud: React.FC<TechIconCloudProps> = ({
         ...containerStyle, // Allow additional dynamic inline styles
       }}
     >
-      <IconCloud images={icons} />
+      <IconCloud images={icons}/>
     </div>
   );
 };

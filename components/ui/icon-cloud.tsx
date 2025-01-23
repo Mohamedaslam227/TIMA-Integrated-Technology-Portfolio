@@ -192,16 +192,18 @@ export function IconCloud({ icons, images }: IconCloudProps) {
       const y = e.clientY - rect.top;
       setMousePos({ x, y });
     }
-
+  
     if (isDragging) {
       const deltaX = e.clientX - lastMousePos.x;
       const deltaY = e.clientY - lastMousePos.y;
-
-      rotationRef.current = {
+  
+      const newRotation = {
         x: rotationRef.current.x + deltaY * 0.002,
         y: rotationRef.current.y + deltaX * 0.002,
       };
-
+  
+      rotationRef.current = newRotation;
+      setRotation(newRotation); // Synchronize state
       setLastMousePos({ x: e.clientX, y: e.clientY });
     }
   };
