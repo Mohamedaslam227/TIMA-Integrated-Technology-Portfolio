@@ -46,7 +46,7 @@ const Dashboard = () => {
             }
             Icon={LayersIcon}
             description="Streamline your business operations with our comprehensive BPO services."
-            href="/bpo"
+            href="/bpo-services"
             cta="Learn about our BPO services"
           />
 

@@ -145,17 +145,17 @@ const Footers: React.FC<FooterProps> = ({ className }) => {
             <div className="grid gap-4">
               <FooterLink 
                 icon={<FaCloud />}
-                href="/services/cloud"
+                href="/cloud-services"
                 text="Cloud Services"
               />
               <FooterLink 
                 icon={<FaCode />}
-                href="/services/software-development"
+                href="/software-development"
                 text="Software Development"
               />
               <FooterLink 
                 icon={<FaBusinessTime />}
-                href="/services/bpo"
+                href="/bpo-services"
                 text="Business Process Outsourcing"
               />
               <FooterLink 
