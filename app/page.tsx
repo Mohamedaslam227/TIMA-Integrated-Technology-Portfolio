@@ -23,7 +23,7 @@ export default function Home() {
       <FloatingDock
         items={dockItems}
         desktopClassName="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-20"
-        mobileClassName="fixed bottom-6 right-6 z-50"
+        mobileClassName="fixed bottom-6 right-6 translate-x-500"
       />
 
       {/* Sections */}
