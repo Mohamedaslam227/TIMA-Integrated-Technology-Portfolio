@@ -150,7 +150,7 @@ const Footers: React.FC<FooterProps> = ({ className }) => {
               />
               <FooterLink 
                 icon={<FaCode />}
-                href="/software-development"
+                href="/software-services"
                 text="Software Development"
               />
               <FooterLink 
