@@ -169,8 +169,8 @@ const SoftwareServicesPage: React.FC = () => {
       technologies: [
         { name: "AWS", icon: "/AWS.svg" },
         { name: "Azure", icon: "/AZURE.svg" },
-        { name: "Docker", icon: "/docker.svg" },
-        { name: "Kubernetes", icon: "/kubernetes.svg" }
+        { name: "Docker", icon: "/DOCKER.svg" },
+        { name: "Kubernetes", icon: "/KUBERNETES.svg" }
       ],
       features: [
         "Scalable Cloud Architectures",
