@@ -26,6 +26,10 @@ const config = {
   		}
   	},
   	extend: {
+		animation: {
+			'float': 'float 4s ease-in-out infinite',
+			'float-delay': 'floatDelay 4s ease-in-out infinite',
+		  },
   		colors: {
   			black: {
   				'100': '#000319',
@@ -205,7 +209,15 @@ const config = {
   				to: {
   					transform: 'translateY(calc(-100% - var(--gap)))'
   				}
-  			}
+  			},
+			  float: {
+				'0%, 100%': { transform: 'translateY(0px)' },
+				'50%': { transform: 'translateY(-8px)' },
+			  },
+			  floatDelay: {
+				'0%, 100%': { transform: 'translateY(0px)' },
+				'50%': { transform: 'translateY(8px)' },
+			  }
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
