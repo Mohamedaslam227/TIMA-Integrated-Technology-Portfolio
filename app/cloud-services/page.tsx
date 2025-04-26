@@ -22,7 +22,10 @@ import {
   UsersIcon,
   SettingsIcon,
   LayoutIcon,
-  AwardIcon
+  AwardIcon,
+  PhoneIcon,
+  MailIcon,
+  MapPinIcon
 } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -33,9 +36,80 @@ const CloudServicesPage = () => {
   const [expandedService, setExpandedService] = useState(null);
   const [showServiceDetails, setShowServiceDetails] = useState(false);
   const [selectedCloud, setSelectedCloud] = useState(null);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState(null);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    company: '',
+    service: '',
+    message: ''
+  });
   
   // References for scroll functionality
   const sectionsRef = useRef({});
+  
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+  
+  // Handle form submission
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormSubmitting(true);
+    setFormError(null);
+    
+    try {
+      // Replace with your Google Apps Script web app URL
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbyiPUFp127H0q_VY3xOSsG7W3tnQPSRO1OsK0l4LGinbkspjl34YuQqUUXpW5bxpWeQ/exec";
+      
+      // Create form data to send
+      const formDataToSend = new FormData();
+      formDataToSend.append('Name', `${formData.firstName} ${formData.lastName}`);
+      formDataToSend.append('Email', formData.email);
+      formDataToSend.append('Company', formData.company);
+      formDataToSend.append('InterestedIn', formData.service);
+      formDataToSend.append('Message', formData.message);
+      
+      // Send form data to Google Apps Script
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        body: formDataToSend
+      });
+      
+      const result = await response.json();
+      
+      if (result.result === 'success') {
+        // Form submitted successfully
+        setFormSubmitted(true);
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          company: '',
+          service: '',
+          message: ''
+        });
+      } else {
+        // Handle error
+        setFormError("There was an error submitting your form. Please try again.");
+      }
+    } catch (error) {
+      setFormError("There was an error submitting your form. Please try again.");
+      console.error("Form submission error:", error);
+    } finally {
+      setFormSubmitting(false);
+    }
+  };
   
   // Function to handle smooth scrolling to sections
   const scrollToSection = (sectionId) => {
@@ -929,8 +1003,6 @@ const CloudServicesPage = () => {
         </div>
       </section>
 
-
-
       {/* Contact / CTA Section */}
       <section id="contact" className="relative py-20 md:py-32">
         <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -942,92 +1014,206 @@ const CloudServicesPage = () => {
         <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-purple-700/10 rounded-full blur-3xl"></div>
         
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto relative">
-            <div className="absolute inset-0 border border-blue-500/20 rounded-3xl blur-sm transform scale-105"></div>
-            
+          <div className="max-w-5xl mx-auto relative">
             <motion.div 
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
-              className="bg-gray-900/70 backdrop-blur-lg p-8 md:p-12 rounded-3xl border border-blue-500/30 shadow-xl"
+              className="text-center mb-16"
             >
-              <div className="text-center">
-                <span className="px-4 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium">
-                  ELEVATE YOUR INFRASTRUCTURE
-                </span>
-                
-                <h2 className="text-3xl md:text-4xl font-bold text-white mt-6 mb-6">
-                  <span className="inline-block">
-                    <TextAnimate 
-                      className="inline-block"
-                      animation="slideUp"
-                    >
-                      Transform Your Cloud
-                    </TextAnimate>
-                  </span>{" "}
-                  <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Strategy Today</span>
-                </h2>
-                
-                <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-10">
-                  Join hundreds of industry-leading companies that have revolutionized their cloud infrastructure with our expert solutions.
-                </p>
-                
-                <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-8">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Full Name"
-                      className="w-full px-4 py-3 rounded-xl bg-gray-800/60 border border-gray-700 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-colors placeholder-gray-500 text-white"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Work Email"
-                      className="w-full px-4 py-3 rounded-xl bg-gray-800/60 border border-gray-700 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-colors placeholder-gray-500 text-white"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Company Name"
-                      className="w-full px-4 py-3 rounded-xl bg-gray-800/60 border border-gray-700 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-colors placeholder-gray-500 text-white"
-                    />
-                  </div>
-                  <div>
-                    <select className="w-full px-4 py-3 rounded-xl bg-gray-800/60 border border-gray-700 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-colors placeholder-gray-500 text-white appearance-none" defaultValue="">
-                      <option value="" disabled>Interested In</option>
-                      <option value="infrastructure">Cloud Infrastructure</option>
-                      <option value="data">Data Management</option>
-                      <option value="security">Security Services</option>
-                      <option value="scalability">Scalability Consulting</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <motion.button 
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full transition-all duration-300 text-lg font-semibold shadow-lg hover:shadow-blue-500/30 flex items-center mx-auto"
-                >
-                  Schedule Consultation
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </motion.button>
-                
-                <div className="mt-10 flex items-center justify-center gap-6">
-                  <div className="flex -space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-300 text-xs">+250</div>
-                  </div>
-                  <div className="h-8 w-px bg-blue-500/20"></div>
-                  <div className="text-gray-400 text-sm">
-                    Clients successfully transformed <span className="text-blue-400">this year</span>
-                  </div>
-                </div>
-              </div>
+              <span className="text-blue-400 text-sm font-medium px-4 py-1 bg-blue-500/10 rounded-full inline-block mb-3">
+                GET IN TOUCH
+              </span>
+              <h2 className="text-4xl font-bold text-white mb-6 relative inline-block">
+                Contact Us
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1/3 h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+              </h2>
+              <p className="text-gray-300 max-w-2xl mx-auto">
+                Have questions about our cloud services? Reach out to us directly or fill out the form below.
+              </p>
             </motion.div>
+            
+            <div className="grid md:grid-cols-2 gap-10">
+              {/* Contact Info */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="bg-gray-900/70 backdrop-blur-lg p-8 rounded-2xl border border-blue-500/20 shadow-xl"
+              >
+                <h3 className="text-2xl font-bold text-white mb-6">Contact Information</h3>
+                
+                <div className="space-y-8">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-900/50 backdrop-blur-sm flex items-center justify-center text-blue-400 mr-4 border border-blue-700/50">
+                      <PhoneIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-white">Phone</h3>
+                      <p className="text-gray-400">+91 9363721147</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-purple-900/50 backdrop-blur-sm flex items-center justify-center text-purple-400 mr-4 border border-purple-700/50">
+                      <MailIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-white">Email</h3>
+                      <p className="text-gray-400">monarch@timatech.com</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-cyan-900/50 backdrop-blur-sm flex items-center justify-center text-cyan-400 mr-4 border border-cyan-700/50">
+                      <MapPinIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-white">Office</h3>
+                      <p className="text-gray-400">50, Sundarajapuram AA road,<br />Madurai-625011, India</p>
+                    </div>
+                  </div>
+                </div>
+
+              </motion.div>
+              
+              {/* Contact Form */}
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <div className="bg-gray-900/70 backdrop-blur-sm rounded-xl border border-gray-800 p-8 shadow-xl shadow-indigo-900/10">
+                  {formSubmitted ? (
+                    <div className="text-center py-10">
+                      <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckIcon className="w-8 h-8 text-green-400" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
+                      <p className="text-gray-300 mb-6">
+                        Your message has been successfully submitted. Our team will get back to you shortly.
+                      </p>
+                      <button
+                        onClick={() => setFormSubmitted(false)}
+                        className="px-6 py-2 bg-indigo-600/50 hover:bg-indigo-600 text-white rounded-md transition-colors"
+                      >
+                        Send Another Message
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleFormSubmit}>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                        <div>
+                          <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1">First Name</label>
+                          <input
+                            type="text"
+                            id="firstName"
+                            name="firstName"
+                            value={formData.firstName || ''}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                            placeholder="Your first name"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1">Last Name</label>
+                          <input
+                            type="text"
+                            id="lastName"
+                            name="lastName"
+                            value={formData.lastName || ''}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                            placeholder="Your last name"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email || ''}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                          placeholder="your.email@example.com"
+                        />
+                      </div>
+                      
+                      <div className="mb-6">
+                        <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-1">Company</label>
+                        <input
+                          type="text"
+                          id="company"
+                          name="company"
+                          value={formData.company || ''}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                          placeholder="Your company name"
+                        />
+                      </div>
+                      
+                      <div className="mb-6">
+                        <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-1">Service Interested In</label>
+                        <select
+                          id="service"
+                          name="service"
+                          value={formData.service || ''}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                        >
+                          <option value="">Select a service</option>
+                          <option value="infrastructure">Cloud Infrastructure</option>
+                          <option value="data">Data Management</option>
+                          <option value="security">Security Services</option>
+                          <option value="scalability">Scalability Consulting</option>
+                          <option value="other">Other Services</option>
+                        </select>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Project Details</label>
+                        <textarea
+                          id="message"
+                          name="message"
+                          value={formData.message || ''}
+                          onChange={handleInputChange}
+                          required
+                          rows={4}
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                          placeholder="Tell us about your project and requirements"
+                        ></textarea>
+                      </div>
+                      
+                      {formError && (
+                        <div className="mb-6 p-3 bg-red-900/20 border border-red-800 rounded-md text-red-300 text-sm">
+                          {formError}
+                        </div>
+                      )}
+                      
+                      <button
+                        type="submit"
+                        disabled={formSubmitting}
+                        className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 shadow-lg shadow-indigo-900/30 ${
+                          formSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:from-indigo-700 hover:to-purple-700'
+                        }`}
+                      >
+                        {formSubmitting ? 'Submitting...' : 'Submit Request'}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
