@@ -5,6 +5,10 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Footers from '../../components/Footers';
 
+// Contact form state
+// Add this at the top level of your file
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwacn3ydoOEw7LCxNVLp8av_SWiuq1N9j_KJtRK7CGKT15cbJrqb6260VhECTOzZNke/exec';
+
 // Updated TIMA Logo Component for dark mode
 const TimaLogo = () => (
   <div className="flex items-center">
@@ -160,6 +164,106 @@ const AnimatedGradient = () => (
 // Main Component with dark mode design
 const SoftwareServicesPage = () => {
   const [openFaq, setOpenFaq] = useState(null);
+  
+  // Form state for Google Sheets integration
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    company: '',
+    service: '',
+    message: ''
+  });
+  
+  const [formStatus, setFormStatus] = useState({
+    submitting: false,
+    submitted: false,
+    error: null
+  });
+  
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+  
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.service || !formData.message) {
+      setFormStatus({
+        submitting: false,
+        submitted: false,
+        error: 'Please fill out all required fields'
+      });
+      return;
+    }
+    
+    setFormStatus({
+      submitting: true,
+      submitted: false,
+      error: null
+    });
+    
+    try {
+      // Create a URLSearchParams object instead of FormData for better compatibility
+      const params = new URLSearchParams();
+      
+      // Format data according to what doPost expects
+      params.append('Name', `${formData.firstName} ${formData.lastName}`);
+      params.append('Email', formData.email);
+      params.append('Message', `Service: ${formData.service}
+  Company: ${formData.company || 'Not specified'}
+  Details: ${formData.message}`);
+      
+      console.log('Sending form data:', params.toString());
+      
+      // Send data to Google Apps Script
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Required for Google Apps Script
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params
+      });
+      
+      console.log('Form submitted, response status:', response.status);
+      
+      // Reset form on success
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        company: '',
+        service: '',
+        message: ''
+      });
+      
+      setFormStatus({
+        submitting: false,
+        submitted: true,
+        error: null
+      });
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setFormStatus(prev => ({ ...prev, submitted: false }));
+      }, 5000);
+      
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setFormStatus({
+        submitting: false,
+        submitted: false,
+        error: 'There was an error submitting your request. Please try again.'
+      });
+    }
+  };
   
   // Updated services with new color scheme for dark mode
   const services = [
@@ -718,7 +822,7 @@ const SoftwareServicesPage = () => {
         </div>
       </section>
       
-      {/* Contact Form Section - Dark Mode */}
+      {/* Contact Form Section - Dark Mode - UPDATED WITH GOOGLE SHEETS INTEGRATION */}
       <section id="contact" className="py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -748,7 +852,7 @@ const SoftwareServicesPage = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-white">Phone</h3>
-                    <p className="text-gray-400">+1 (555) 123-4567</p>
+                    <p className="text-gray-400">+91 9363721147</p>
                   </div>
                 </div>
                 
@@ -760,7 +864,7 @@ const SoftwareServicesPage = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-white">Email</h3>
-                    <p className="text-gray-400">info@timatech.com</p>
+                    <p className="text-gray-400">monarch@timatech.com</p>
                   </div>
                 </div>
                 
@@ -773,7 +877,7 @@ const SoftwareServicesPage = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-white">Office</h3>
-                    <p className="text-gray-400">123 Tech Boulevard, Innovation District<br />San Francisco, CA 94107</p>
+                    <p className="text-gray-400">50, Sundarajapuram AA road,<br />Madurai-625011, India</p>
                   </div>
                 </div>
               </div>
@@ -786,79 +890,125 @@ const SoftwareServicesPage = () => {
               viewport={{ once: true }}
             >
               <div className="bg-gray-900/70 backdrop-blur-sm rounded-xl border border-gray-800 p-8 shadow-xl shadow-indigo-900/10">
-                <form>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1">First Name</label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
-                        placeholder="Your first name"
-                      />
+                {formStatus.submitted ? (
+                  <div className="text-center py-10">
+                    <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
                     </div>
-                    <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1">Last Name</label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
-                        placeholder="Your last name"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-1">Company</label>
-                    <input
-                      type="text"
-                      id="company"
-                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
-                      placeholder="Your company name"
-                    />
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-1">Service Interested In</label>
-                    <select
-                      id="service"
-                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                    <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
+                    <p className="text-gray-300 mb-6">
+                      Your message has been successfully submitted. Our team will get back to you shortly.
+                    </p>
+                    <button
+                      onClick={() => setFormStatus(prev => ({ ...prev, submitted: false }))}
+                      className="px-6 py-2 bg-indigo-600/50 hover:bg-indigo-600 text-white rounded-md transition-colors"
                     >
-                      <option value="">Select a service</option>
-                      <option value="web">Web Development</option>
-                      <option value="mobile">Mobile Development</option>
-                      <option value="cloud">Cloud Engineering</option>
-                      <option value="other">Other Services</option>
-                    </select>
+                      Send Another Message
+                    </button>
                   </div>
-                  
-                  <div className="mb-6">
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Project Details</label>
-                    <textarea
-                      id="message"
-                      rows={4}
-                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
-                      placeholder="Tell us about your project and requirements"
-                    ></textarea>
-                  </div>
-                  
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-md font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-indigo-900/30"
-                  >
-                    Submit Request
-                  </button>
-                </form>
+                ) : (
+                  <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1">First Name</label>
+                        <input
+                          type="text"
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                          placeholder="Your first name"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1">Last Name</label>
+                        <input
+                          type="text"
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                          placeholder="Your last name"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="mb-6">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                        placeholder="your.email@example.com"
+                      />
+                    </div>
+                    
+                    <div className="mb-6">
+                      <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-1">Company</label>
+                      <input
+                        type="text"
+                        id="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                        placeholder="Your company name"
+                      />
+                    </div>
+                    
+                    <div className="mb-6">
+                      <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-1">Service Interested In</label>
+                      <select
+                        id="service"
+                        value={formData.service}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                      >
+                        <option value="">Select a service</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Mobile Development">Mobile Development</option>
+                        <option value="Cloud Engineering">Cloud Engineering</option>
+                        <option value="Other Services">Other Services</option>
+                      </select>
+                    </div>
+                    
+                    <div className="mb-6">
+                      <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Project Details</label>
+                      <textarea
+                        id="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        required
+                        rows={4}
+                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-white"
+                        placeholder="Tell us about your project and requirements"
+                      ></textarea>
+                    </div>
+                    
+                    {formStatus.error && (
+                      <div className="mb-6 p-3 bg-red-900/20 border border-red-800 rounded-md text-red-300 text-sm">
+                        {formStatus.error}
+                      </div>
+                    )}
+                    
+                    <button
+                      type="submit"
+                      disabled={formStatus.submitting}
+                      className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-md font-medium transition-all duration-300 shadow-lg shadow-indigo-900/30 ${
+                        formStatus.submitting ? 'opacity-70 cursor-not-allowed' : 'hover:from-indigo-700 hover:to-purple-700'
+                      }`}
+                    >
+                      {formStatus.submitting ? 'Submitting...' : 'Submit Request'}
+                    </button>
+                  </form>
+                )}
               </div>
             </motion.div>
           </div>

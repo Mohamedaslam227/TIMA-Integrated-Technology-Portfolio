@@ -280,8 +280,8 @@ const Footers: React.FC<FooterProps> = ({ className }) => {
                   <FaMapMarkerAlt />
                 </div>
                 <div className="text-gray-400 text-sm">
-                  <p>123 Tech Avenue, Suite 101</p>
-                  <p>Bangalore, Karnataka 560001</p>
+                  <p> 50, Sundarajapuram AA road</p>
+                  <p>Madurai, Tamil Nadu 625011</p>
                   <p>India</p>
                 </div>
               </div>
@@ -295,14 +295,13 @@ const Footers: React.FC<FooterProps> = ({ className }) => {
               />
               <ContactLink 
                 icon={<FaPhone />}
-                href="tel:+919363721147"
-                text="+91 9363721147"
+                href="tel:+919944608331"
+                text="+91 9944608331"
               />
               <ContactLink 
-                icon={<FaLinkedin />}
-                href="https://www.linkedin.com/company/timatech"
-                text="LinkedIn Profile"
-                external
+                icon={<FaPhone />}
+                href="tel:+918248963902"
+                text="+91 8248963902"
               />
             </div>
           </div>
@@ -314,7 +313,7 @@ const Footers: React.FC<FooterProps> = ({ className }) => {
             <div className="flex items-center gap-4">
               <SocialButton 
                 icon={<FaLinkedin />} 
-                href="https://linkedin.com/company/timatech"
+                href="https://www.linkedin.com/company/tima-integrated-technologies/posts/?feedView=all"
                 text="LinkedIn"
               />
               <SocialButton 
