@@ -29,6 +29,39 @@ import {
 // Component imports (assuming these are in your project)
 import Footers from '../../components/Footers';
 
+// Google Sheets API utility function
+const submitToGoogleSheets = async (formData) => {
+  // Replace with your deployed Google Apps Script Web App URL
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzuD_Q2FkpuzQPNNoASR8EiEdFO5aB66uQnIMpBtfYTERvHiBsfG1jsc2j87S96SJn0/exec";
+  
+  try {
+    // Create URL-encoded form data
+    const formDataEncoded = new URLSearchParams({
+      Name: formData.name,
+      Email: formData.email,
+      Company: formData.company || "",
+      Service: formData.service || "",
+      Message: formData.message || ""
+    }).toString();
+
+    // Submit form data
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formDataEncoded,
+      mode: 'no-cors' // Required for Google Apps Script
+    });
+
+    // Since no-cors mode doesn't return readable response, we assume success
+    return { success: true, message: "Form submitted successfully" };
+  } catch (error) {
+    console.error('Error submitting to Google Sheets:', error);
+    return { success: false, message: "Error submitting form. Please try again." };
+  }
+};
+
 // =====================
 // Utility Components
 // =====================
@@ -839,8 +872,65 @@ const ProcessSection = () => {
   );
 };
 
-// Contact Section Component
+// Contact Section Component with Google Sheets Integration
 const ContactSection = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    service: "",
+    message: ""
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  // Handle input changes
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      // Call the Google Sheets submission function
+      const result = await submitToGoogleSheets(formData);
+      
+      setSubmitStatus({
+        success: result.success,
+        message: result.success ? 
+          "Thanks for your message! We'll contact you soon." : 
+          result.message || "Something went wrong. Please try again later."
+      });
+      
+      // Reset form on success
+      if (result.success) {
+        setFormData({
+          name: "",
+          email: "",
+          company: "",
+          service: "",
+          message: ""
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus({
+        success: false,
+        message: "Something went wrong. Please try again later."
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-24 bg-gradient-to-r from-gray-900 to-blue-900 text-white">
       <div className="container mx-auto px-6">
@@ -870,7 +960,13 @@ const ContactSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="bg-white/10 backdrop-blur-sm rounded-2xl shadow-xl p-8 md:p-10 border border-white/10"
           >
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {submitStatus && (
+                <div className={`p-4 rounded-lg ${submitStatus.success ? 'bg-green-800/50 text-green-200' : 'bg-red-800/50 text-red-200'}`}>
+                  {submitStatus.message}
+                </div>
+              )}
+              
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-blue-200 mb-1">
@@ -879,8 +975,11 @@ const ContactSection = () => {
                   <input
                     type="text"
                     id="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-white/5 border border-blue-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-white"
                     placeholder="John Smith"
+                    required
                   />
                 </div>
                 <div>
@@ -890,8 +989,11 @@ const ContactSection = () => {
                   <input
                     type="email"
                     id="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-white/5 border border-blue-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-white"
                     placeholder="john@company.com"
+                    required
                   />
                 </div>
               </div>
@@ -904,6 +1006,8 @@ const ContactSection = () => {
                   <input
                     type="text"
                     id="company"
+                    value={formData.company}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-white/5 border border-blue-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-white"
                     placeholder="Your Company"
                   />
@@ -915,13 +1019,15 @@ const ContactSection = () => {
                   </label>
                   <select
                     id="service"
+                    value={formData.service}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-white/5 border border-blue-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-white"
                   >
                     <option value="" className="bg-blue-900">Select a service</option>
-                    <option value="optimize" className="bg-blue-900">Process Optimization</option>
-                    <option value="global" className="bg-blue-900">Global Reach</option>
-                    <option value="technology" className="bg-blue-900">Technology Integration</option>
-                    <option value="custom" className="bg-blue-900">Custom Solution</option>
+                    <option value="Process Optimization" className="bg-blue-900">Process Optimization</option>
+                    <option value="Global Reach" className="bg-blue-900">Global Reach</option>
+                    <option value="Technology Integration" className="bg-blue-900">Technology Integration</option>
+                    <option value="Custom Solution" className="bg-blue-900">Custom Solution</option>
                   </select>
                 </div>
               </div>
@@ -933,19 +1039,33 @@ const ContactSection = () => {
                 <textarea
                   id="message"
                   rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-blue-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-white"
                   placeholder="Tell us about your business challenges and goals"
+                  required
                 ></textarea>
               </div>
               
               <div className="pt-2">
                 <button
                   type="submit"
+                  disabled={submitting}
                   className="w-full relative group"
                 >
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-lg blur opacity-70 group-hover:opacity-100 transition duration-200"></div>
-                  <div className="relative bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg font-medium group-hover:from-cyan-600 group-hover:to-blue-600 transition-all">
-                    Schedule Consultation
+                  <div className="relative bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg font-medium group-hover:from-cyan-600 group-hover:to-blue-600 transition-all flex items-center justify-center">
+                    {submitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </>
+                    ) : (
+                      'Schedule Consultation'
+                    )}
                   </div>
                 </button>
                 
@@ -981,7 +1101,7 @@ const TIMAPage = () => {
       {/* Process Section with Numbered Steps */}
       <ProcessSection />
       
-      {/* Contact Section */}
+      {/* Contact Section with Google Sheets Integration */}
       <ContactSection />
       
       {/* Footer */}
