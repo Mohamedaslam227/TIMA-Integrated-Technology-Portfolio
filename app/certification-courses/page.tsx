@@ -298,7 +298,7 @@ const COURSES: Course[] = [
     ],
     certification: 'MongoDB Certified DBA',
     category: 'International Certification',
-    imagePath: '/MONGODB-2.svg'
+    imagePath: '/MONOGODB-2.svg'
   },
   {
     id: 'android-cert',
@@ -654,7 +654,7 @@ const COURSES: Course[] = [
     ],
     certification: 'Certified Blockchain Developer',
     category: 'Certificate Course',
-    imagePath: '/BLOCKChain.svg'
+    imagePath: '/BLOCK CHAIN.svg'
   },
   
   // Community College
