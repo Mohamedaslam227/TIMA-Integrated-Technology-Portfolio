@@ -162,17 +162,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
-        {/* Call to Action */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ready to transform your business?</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-            Our experts are ready to help you implement tailored solutions that drive growth and efficiency.
-          </p>
-          <a href="/contact" className="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors">
-            Schedule a consultation
-          </a>
-        </div>
       </div>
     </div>
   );
