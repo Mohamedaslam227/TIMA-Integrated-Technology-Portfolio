@@ -144,7 +144,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             <div className="flex items-center gap-4">
               <SocialButton 
                 icon={<FaLinkedin />} 
-                href="https://linkedin.com/company/timatech"
+                href="https://www.linkedin.com/company/tima-integrated-technologies/"
                 text="LinkedIn"
               />
               <SocialButton 
